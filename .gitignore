@@ -1,0 +1,67 @@
+# Flutter/Dart/Pub related
+**/coverage/
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-versions
+.dart_tool/
+.packages
+build/
+.pub-cache/
+.pub/
+
+# Firebase related
+**/android/app/google-services.json
+**/ios/Runner/GoogleService-Info.plist
+**/web/firebase-config.js
+
+# macOS related
+**/macos/Flutter/ephemeral/
+**/macos/Flutter/Generated.xcconfig
+
+# Windows related
+**/windows/flutter/ephemeral/
+**/windows/CMakeLists.txt
+
+# Linux related
+**/linux/flutter/ephemeral/
+
+# iOS related
+**/ios/.generated/
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Pods/
+
+# Xcode related
+xcuserdata/
+*.xcworkspace/
+*.xcodeproj/
+*.xcassets/
+
+# Android related
+**/android/.gradle/
+**/android/key.jks
+**/android/local.properties
+
+# VS Code specific
+.vscode/
+
+# JetBrains IDEs (IntelliJ, Android Studio, etc.)
+.idea/
+*.iml
+
+# Logs & Misc
+*.log
+*.lock
+*.pyc
+*.swp
+.DS_Store
+*.bak
+*.tmp
+*.swp
+
+# Temporary or generated files
+*.g.dart
+*.mocks.dart
+*.freezed.dart
+*.env

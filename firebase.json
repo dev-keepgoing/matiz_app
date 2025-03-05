@@ -1,0 +1,46 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "matiz-app",
+          "appId": "1:444858309033:android:901fd66404b6e350644cb8",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "matiz-app",
+          "appId": "1:444858309033:ios:28e919cbad7fee44644cb8",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "matiz-app",
+          "configurations": {
+            "android": "1:444858309033:android:901fd66404b6e350644cb8",
+            "ios": "1:444858309033:ios:28e919cbad7fee44644cb8",
+            "web": "1:444858309033:web:993762e9fff1fb6d644cb8"
+          }
+        }
+      }
+    }
+  },
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "functions": {
+      "port": 5001
+    },
+    "database": {
+      "port": 9000
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
+  }
+}
