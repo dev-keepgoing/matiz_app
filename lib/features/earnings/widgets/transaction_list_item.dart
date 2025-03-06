@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:matiz/app/widgets/list_item.dart';
 import 'package:matiz/features/earnings/data/models/transaction.dart';
 import 'package:matiz/features/earnings/data/repositories/transaction_repository.dart';
 import '../bloc/transaction_bloc.dart';
 import '../bloc/transaction_event.dart';
 import '../bloc/transaction_state.dart';
-import 'transaction_item.dart';
 
 class TransactionListScreen extends StatelessWidget {
   const TransactionListScreen({super.key});
@@ -21,7 +22,7 @@ class TransactionListScreen extends StatelessWidget {
       child: BlocBuilder<TransactionBloc, TransactionState>(
         builder: (context, state) {
           if (state is TransactionLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return _buildShimmerLoader(); // ✅ Show shimmer effect while loading
           } else if (state is TransactionError) {
             return Center(child: Text('Error: ${state.error}'));
           } else if (state is TransactionLoaded) {
@@ -70,16 +71,24 @@ class TransactionListScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Text(
                         dateKey, // Today, Yesterday, or formatted date
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
-                                ),
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ),
-                    // 📜 Transactions for this section
-                    ...items.map((transaction) =>
-                        TransactionItem(transaction: transaction)),
+                    // Transactions for this section with alternating colors
+                    ...items.asMap().entries.map((entry) {
+                      final itemIndex = entry.key;
+                      final transaction = entry.value;
+
+                      return ListItem(
+                        imageUrl: transaction.image,
+                        title:
+                            'POSTER ${transaction.number.map((int num) => "#$num").join(", ")}',
+                        backgroundColor: itemIndex.isOdd
+                            ? Colors.grey[
+                                200] // Odd transactions get a light gray background
+                            : null, // Even transactions use default
+                      );
+                    }),
                   ],
                 );
               },
@@ -97,5 +106,29 @@ class TransactionListScreen extends StatelessWidget {
     return date1.year == date2.year &&
         date1.month == date2.month &&
         date1.day == date2.day;
+  }
+
+  // 🌟 Shimmer Placeholder Loader
+  Widget _buildShimmerLoader() {
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+      itemCount: 5, // Show 5 shimmer placeholders
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: 80,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

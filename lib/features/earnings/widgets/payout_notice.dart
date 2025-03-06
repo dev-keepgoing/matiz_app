@@ -15,11 +15,8 @@ class PayoutNotice extends StatelessWidget {
   Widget build(BuildContext context) {
     if (title.isEmpty) return const SizedBox.shrink();
     return NoticeCard(
-        title: title,
-        // title: DateFormatHelper.formatDate(payoutDate),
-        description: description
-        // description:
-        //     "INICIAREMOS EL DEPOSITO DE $formattedBalance A TU CUENTA DE BANCO.",
-        );
+      title: title,
+      description: description,
+    );
   }
 }

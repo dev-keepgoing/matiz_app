@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:matiz/app/screens/popup_wrapper.dart';
 import 'package:matiz/core/data/services/analytics_service.dart';
 import 'package:matiz/features/authentication/bloc/authentication_bloc.dart';
 import 'package:matiz/features/authentication/bloc/authentication_state.dart';
@@ -12,9 +13,10 @@ import 'package:matiz/features/earnings/bloc/payout_state.dart';
 import 'package:matiz/features/earnings/data/models/monthly_earning.dart';
 import 'package:matiz/features/earnings/data/repositories/fact_respository.dart';
 import 'package:matiz/features/earnings/data/repositories/payout_repository.dart';
+import 'package:matiz/features/earnings/presentation/earning_list_screen.dart';
 import 'package:matiz/features/earnings/widgets/balance_display.dart';
 import 'package:matiz/features/earnings/widgets/earnings_chart.dart';
-import 'package:matiz/features/earnings/widgets/payout_notice.dart';
+import 'package:matiz/features/earnings/widgets/notice_card.dart';
 import 'package:matiz/features/earnings/widgets/transaction_list_item.dart';
 import 'package:matiz/utils/format_date.dart';
 import 'package:matiz/utils/month_converter.dart';
@@ -96,6 +98,8 @@ class _MyEarningsContentState extends State<MyEarningsContent> {
 
   @override
   Widget build(BuildContext context) {
+    // Check if at least one earning is greater than zero
+    final bool hasEarnings = monthlyData.any((e) => e.earnings > 0);
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
       builder: (context, state) {
         if (state is! AuthenticationAuthenticated) {
@@ -122,10 +126,25 @@ class _MyEarningsContentState extends State<MyEarningsContent> {
                     const SizedBox(height: 24.0),
                     BalanceDisplay(balance: balance, currency: 'US DOLLAR'),
                     const SizedBox(height: 24.0),
-                    PayoutNotice(
+                    // Check if at least one earning is greater than zero
+
+                    NoticeCard(
                       title: DateFormatHelper.formatDate(payoutDate),
                       description:
                           "INICIAREMOS EL DEPOSITO DE $formattedBalance A TU CUENTA DE BANCO.",
+                      onTap: hasEarnings
+                          ? () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => ScreenWrapper(
+                                    title: "HISTORIAL DE GANANCIAS",
+                                    body: EarningsListScreen(
+                                        earningsData: monthlyData),
+                                  ),
+                                ),
+                              );
+                            }
+                          : null,
                     ),
                     const SizedBox(height: 24.0),
                     Text("LAS VENTAS",
@@ -135,18 +154,27 @@ class _MyEarningsContentState extends State<MyEarningsContent> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Expanded(
-                            child: PayoutNotice(
-                          title: artistTier,
-                          description: "GANAS POR POSTER",
-                        )),
+                          child: NoticeCard(
+                            title: artistTier,
+                            description: "GANAS POR POSTER",
+                          ),
+                        ),
                         const SizedBox(
                           width: 8,
                         ),
                         Expanded(
-                            child: PayoutNotice(
-                          title: "$posterAmount",
-                          description: "POSTERS VENDIDOS ESTE MES",
-                        )),
+                            child: NoticeCard(
+                                title: "$posterAmount",
+                                description: "POSTERS VENDIDOS ESTE MES",
+                                arrowWidth: 42,
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (_) => ScreenWrapper(
+                                      title: "POSTERS VENDIDOS",
+                                      body: TransactionListScreen(),
+                                    ),
+                                  ));
+                                })),
                       ],
                     )),
                     const SizedBox(height: 24.0),
@@ -155,13 +183,6 @@ class _MyEarningsContentState extends State<MyEarningsContent> {
                     const SizedBox(height: 10.0),
                     _buildEarningsChart(),
                     const SizedBox(height: 24.0),
-                    // Text("LISTA DE COMPRAS",
-                    //     style: Theme.of(context).textTheme.headlineSmall),
-                    // const SizedBox(height: 10.0),
-                    // SizedBox(
-                    //   height: 500, // ✅ Allow enough height for scrolling
-                    //   child: TransactionListScreen(),
-                    // ),
                   ],
                 )),
           ),
@@ -177,7 +198,10 @@ class _MyEarningsContentState extends State<MyEarningsContent> {
           final newData = payoutState.payoutHistory.recentPayouts.map((payout) {
             final monthNumber = payout.month.substring(5, 7);
             final monthName = MonthConverter.convert(monthNumber);
-            return MonthlyEarning(month: monthName, earnings: payout.amount);
+            return MonthlyEarning(
+                month: monthName,
+                earnings: payout.amount,
+                paidOn: payout.paidOn);
           }).toList();
           _updateMonthlyData(newData);
         }

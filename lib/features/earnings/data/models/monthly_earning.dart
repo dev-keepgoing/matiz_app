@@ -2,11 +2,10 @@
 class MonthlyEarning {
   final String month;
   final double earnings;
+  final String? paidOn;
 
-  const MonthlyEarning({
-    required this.month,
-    required this.earnings,
-  });
+  const MonthlyEarning(
+      {required this.month, required this.earnings, this.paidOn});
 
   @override
   bool operator ==(Object other) =>

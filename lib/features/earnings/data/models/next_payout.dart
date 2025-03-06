@@ -17,8 +17,8 @@ class NextPayout {
       amount: (json['amount'] as num).toDouble(),
       date: json['date'],
       updatedAt: json['updatedAt'],
-      tiered: json['tiered'],
-      posterAmount: json['posterAmount'],
+      tiered: json['tiered'] ?? 5,
+      posterAmount: json['posterAmount'] ?? 0,
     );
   }
 
